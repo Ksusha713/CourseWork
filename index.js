@@ -69,10 +69,13 @@ app.post("/signup", async (req, res) => {
 });
 
 
-app.get("/account:id", async (req, res) => {
-  const [results] = await connection.query(`SELECT * FROM Users WHERE UserID = ${req.params.id}`)
-  res.render(`${__dirname}/views/account.ejs`, { user:results[0] });
-})
+app.get("/account/:id", async (req, res) => {
+  const [results] = await connection.query(
+    `SELECT * FROM Users WHERE UserID = ?`, 
+    [req.params.id]
+  )
+  res.render("account", { user: results[0] });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
