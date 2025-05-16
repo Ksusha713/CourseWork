@@ -6,11 +6,27 @@
     <title>Document</title>
 </head>
 <body>
+    <% if (typeof error !== 'undefined') { %>
+  <div class="alert alert-error" style="color: red; margin-bottom: 15px;">
+    <%= error %>
+  </div>
+<% } %>
     <h1>Login Page</h1>
     <form action="/login" method="post">
-        <label>Username<input placeholder="ksusha" type="text" name="username"></label>
+        <label>Email<input type="text" name="email"></label>
         <label>Password<input type="password" name="password"></label>
         <button type="submit">Submit</button>
     </form>
 </body>
 </html>
+
+<script>
+    const query = new URLSearchParams(window.location.search);
+    const error = query.get("error")
+    if (error) {
+        const errorElement = document.createElement("p");
+        errorElement.innerText = error;
+        document.body.appendChild(errorElement)
+        errorElement.style.color = "red"
+    }
+</script>
