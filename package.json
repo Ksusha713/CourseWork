@@ -1,0 +1,19 @@
+{
+  "name": "coursework",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.1.10",
+    "express": "^5",
+    "mysql": "github:mysqljs/mysql",
+    "mysql2": "^3.14.1"
+  },
+  "type": "module"
+}
