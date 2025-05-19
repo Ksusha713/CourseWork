@@ -1,12 +1,21 @@
+import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 import express from 'express'
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt'; //for incrypting passwords
+import cartroutes from './routes/cartroutes.js'
 
 const app = express();
 const port = 3000;
 const __dirname = import.meta.dirname;
+const jsonParser = bodyParser.json()
+
 app.use(express.urlencoded({ extended: true })); //to read the body of post request
 app.use(express.json());
+app.use(cookieParser());
+app.use(express.static('public'))
+app.use(jsonParser);
 
 let connection = await mysql.createConnection({
   host: "localhost",
@@ -21,11 +30,12 @@ app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/views/index.html`);
 });
 
+//PRODUCTS
 app.get("/products", async (req, res) => {
   const [results] = await connection.query("SELECT * FROM Products")
   res.render(`${__dirname}/views/products.ejs`, {products:results})
 });
-
+//ITEM
 app.get("/products/:id", async (req, res) => {
   const [results] = await connection.query(`SELECT * FROM Products WHERE ProductID = ${req.params.id}`)
   res.render(`${__dirname}/views/item.ejs`, { product:results[0] });
@@ -51,12 +61,21 @@ app.post("/login", async (req, res) => {
     return res.render("login", { error: "No account found with this email" });
   }
   const user = results[0];
+
   const passwordMatch = await bcrypt.compare(password, user.password);
-  if (!passwordMatch) {
+
+  if (passwordMatch) {
+  res.cookie('authToken', user.UserID, {
+    httpOnly: true,      // Prevent XSS attacks
+    maxAge: 86400000,    // 24 hours expiration
+    sameSite: 'strict'   // Prevent CSRF attacks
+  })
+  res.redirect(`/account/${user.UserID}`);
+  } else {
     return res.render("login", { error: "Incorrect password" });
   }
-  res.redirect(`/account/${user.UserID}`);
 });
+
 
 
 //SIGN UP
@@ -103,6 +122,10 @@ app.post("/signup", async (req, res) => {
   res.redirect(`/account/${newUserId}`);
 });
 
+//ACCOUNT
+app.get('/account', (req, res) => {
+  res.render('account', { user: req.user });
+});
 
 app.get("/account/:id", async (req, res) => {
   const [results] = await connection.query(
@@ -111,6 +134,10 @@ app.get("/account/:id", async (req, res) => {
   )
   res.render("account", { user: results[0] });
 });
+
+
+app.use("/cart", cartroutes);
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

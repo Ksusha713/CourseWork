@@ -1,11 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1><%= product.Name %></h1>
-</body>
+    <button class="add-to-cart">Add To Cart</button>
+    <input type="number" placeholder="quantity" class="quantity-product" data-id="<%= product.ProductID %>">
+  </body>
 </html>
+
+<script>
+  const addToCartButton = document.querySelector(".add-to-cart");
+  const productQuantity = document.querySelector(".quantity-product")
+  async function addToCart(id, quantity) {
+    const body = JSON.stringify({ id, quantity });
+    console.log(body)
+    const response = await fetch("/cart/add-to-cart", {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+      method: "POST",
+      body: body
+    });
+
+    if (!response.ok) {
+        return 0;
+    }
+    const data = await response.json();
+    console.log(data)
+    const message = document.createElement("p")
+    message.innerText = "Added"
+    document.body.appendChild(message)
+  }
+  addToCartButton.addEventListener("click",() => {
+    addToCart(productQuantity.dataset.id, productQuantity.value)
+  });
+</script>
