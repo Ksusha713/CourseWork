@@ -65,7 +65,7 @@ app.post("/login", async (req, res) => {
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   if (passwordMatch) {
-  res.cookie('authToken', user.UserID, {
+  res.cookie('User', user.UserID, {
     httpOnly: true,      // Prevent XSS attacks
     maxAge: 86400000,    // 24 hours expiration
     sameSite: 'strict'   // Prevent CSRF attacks
@@ -124,7 +124,8 @@ app.post("/signup", async (req, res) => {
 
 //ACCOUNT
 app.get('/account', (req, res) => {
-  res.render('account', { user: req.user });
+  const user = req.cookies.User;
+  res.redirect(`account/${user}`);
 });
 
 app.get("/account/:id", async (req, res) => {
@@ -132,6 +133,7 @@ app.get("/account/:id", async (req, res) => {
     `SELECT * FROM Users WHERE UserID = ?`, 
     [req.params.id]
   )
+  
   res.render("account", { user: results[0] });
 });
 

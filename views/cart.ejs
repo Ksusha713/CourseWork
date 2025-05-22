@@ -4,8 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Delius&family=Merienda:wght@300..900&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
   </head>
   <body>
+    <header>
+        <nav class="navbar">
+            <p><a href="/account">My account</a></p>
+            <p><a href="/products" class="login">Products</a></p>
+            <p><a href="/cart" class="login">Cart</a></p>
+            <p><a href="/login">Login</a></p>
+            <p><a href="/signup">Signup</a></p>
+        </nav>
+        <div class="head-container">
+            <h1 class="animation2">Gifts that make hearts smile — theirs or yours!</h1>
+        </div>
+    </header>
     <h1>Cart</h1>
     <ul>
       <% cart.forEach(element => { %>

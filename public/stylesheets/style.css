@@ -1,9 +1,49 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: "Winky Sans", Helvetica, Arial, sans-serif;
   background-color: rgba(148, 189, 243, 0.466);
 }
 
 a {
   color: #00B7FF;
+}
+
+h1 {
+    font-family: "Courgette", italic;
+}
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    background: linear-gradient(
+        90deg, 
+        rgba(6, 1, 96, 0.6) 0%, 
+        rgba(9, 9, 121, 0.6) 27%, 
+        rgba(24, 153, 180, 0.6) 78%, 
+        rgba(37, 177, 113, 0.6) 100%
+    );
+    height: 68px;
+    font-family: "Winky Sans", serif;
+}
+.navbar p:first-child a {
+    margin-left: 35px;
+}
+.navbar p:last-child a {
+    margin-right: 70px;
+}
+.navbar p a {
+    margin: 0;
+    color: white;
+    text-decoration: none;
+    z-index: 2;
+    margin: 0 35px;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+.navbar a:hover {
+    opacity: 0.8;
 }

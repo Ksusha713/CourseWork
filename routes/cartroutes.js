@@ -49,6 +49,8 @@ router.get('/', async (req, res) => {
         })
         sum += results[0].Price * product.quantity
     }
+    cart.sum = sum;
+    res.cookie('cart', cart);
     res.render('cart', { cart: cartDetails, sum: sum });
 });
 
