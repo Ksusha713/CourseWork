@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <h1>Cart</h1>
+    <ul>
+      <% cart.forEach(element => { %>
+      <li><%= element.name %></li>
+      <img src="<%= element.image %>" alt="">
+      <li><%= element.quantity %></li>
+      <li><%= element.price %></li>
+      <li><%= element.description %></li>
+      <% }); %>
+    </ul>
+    <%= sum %>
+    <button class="order"><a href="/checkout"></a>Order</button>
+  </body>
 </html>
+
+<script>
+    
+</script>

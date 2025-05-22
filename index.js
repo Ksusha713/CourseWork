@@ -135,8 +135,9 @@ app.get("/account/:id", async (req, res) => {
   res.render("account", { user: results[0] });
 });
 
-
 app.use("/cart", cartroutes);
+
+//CHECKOUT
 
 
 app.listen(port, () => {

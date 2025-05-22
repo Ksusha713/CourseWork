@@ -8,34 +8,39 @@
   <body>
     <h1><%= product.Name %></h1>
     <button class="add-to-cart">Add To Cart</button>
-    <input type="number" placeholder="quantity" class="quantity-product" data-id="<%= product.ProductID %>">
+    <input
+      type="number"
+      placeholder="quantity"
+      class="quantity-product"
+      data-id="<%= product.ProductID %>"
+    />
   </body>
 </html>
 
 <script>
   const addToCartButton = document.querySelector(".add-to-cart");
-  const productQuantity = document.querySelector(".quantity-product")
+  const productQuantity = document.querySelector(".quantity-product");
   async function addToCart(id, quantity) {
     const body = JSON.stringify({ id, quantity });
-    console.log(body)
+    console.log(body);
     const response = await fetch("/cart/add-to-cart", {
-        headers: {
-            'Content-Type': 'application/json'
-        },
+      headers: {
+        "Content-Type": "application/json",
+      },
       method: "POST",
-      body: body
+      body: body,
     });
 
     if (!response.ok) {
-        return 0;
+      return 0;
     }
     const data = await response.json();
-    console.log(data)
-    const message = document.createElement("p")
-    message.innerText = "Added"
-    document.body.appendChild(message)
+    console.log(data);
+    const message = document.createElement("p");
+    message.innerText = "Added";
+    document.body.appendChild(message);
   }
-  addToCartButton.addEventListener("click",() => {
-    addToCart(productQuantity.dataset.id, productQuantity.value)
+  addToCartButton.addEventListener("click", () => {
+    addToCart(productQuantity.dataset.id, productQuantity.value);
   });
 </script>
