@@ -129,6 +129,10 @@ app.get('/account', (req, res) => {
 });
 
 app.get("/account/:id", async (req, res) => {
+	const user = req.cookies.User;
+	if (!user) {
+		res.redirect("/login");
+	}
   const [results] = await connection.query(
     `SELECT * FROM Users WHERE UserID = ?`, 
     [req.params.id]

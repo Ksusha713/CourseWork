@@ -22,7 +22,6 @@ router.post('/add-to-cart', async (req, res) => {
 	);
 	console.log()
 	let CartID;
-	let product;
 	if (!cart.length ) {
         const [newCart] = await connection.query(`INSERT INTO Cart (userID) VALUES (?)`, 
 		[user]
@@ -32,56 +31,65 @@ router.post('/add-to-cart', async (req, res) => {
     } else {
 		CartID = cart[0].CartID;
 	}
-	const products = await connection.query(
-		`SELECT * FROM Products Where ProductID = ? AND CartID = ?`,
+	const [products] = await connection.query(
+		`SELECT * FROM CartItems Where ProductID = ? AND CartID = ?`,
 		[id, CartID]
 	)
     if (products.length > 0) {
-        quantity = parseInt(quantity)
+		console.log(products)
+        const newQuantity = parseInt(products[0].Quantity)+ parseInt(quantity)
         await connection.query(
 			`UPDATE CartItems
 			SET Quantity = ?
 			WHERE ProductID = ?`,
-			[quantity, id]
+			[newQuantity, id]
 		)
     } else {
-        products = await connection.query(
+        const [products] = await connection.query(
 			`INSERT INTO CartItems (ProductID, Quantity, CartID) VALUES (?, ?, ?)`,
 		[id, quantity, CartID]	
 		)
     } 
-	// const [result] = await connection.query(
-	// 	`INSERT INTO CartItems (ProductID, Quantity, CartID) VALUES (?, ?, ?)`, 
-	// 	[id, quantity, CartID]
-  	// );
+	
     res.json({ status: 200, message: "Added" })
 });
 
 router.get('/', async (req, res) => {
-    const cart = req.cookies.cart || [];
-    const cartDetails = [];
+    const user = req.cookies.User || [];
+    const [cartIDs] = await connection.query(
+		`SELECT CartID FROM Cart WHERE UserID = ?`,
+		[user]
+	)
     let sum = 0
-    for (const product of cart) {
-        const [results] = await connection.query(
-            `SELECT Image, Name, Price, Description FROM Products WHERE ProductID = ?`,
-            [product.id]
-        )
-        cartDetails.push({
-            quantity: product.quantity,
-            image: results[0].Image,
-            price: results[0].Price,
-            name: results[0].Name,
-            description: results[0].Description
-        })
-        sum += results[0].Price * product.quantity
-    }
-    cart.sum = sum;
-    res.cookie('cart', cart);
+	let cartDetails = [];
+	const {CartID} = cartIDs[0]
+	if (CartID > 0) {
+		const [results] = await connection.query(
+			`SELECT ProductID, Quantity FROM CartItems WHERE CartID = ?`,
+			[CartID]
+		)
+		for (const item of results) {
+			const [products] = await connection.query(
+				`SELECT Name, Price, Description, Image FROM Products WHERE ProductID = ?`,
+				[item.ProductID]
+			)
+			if (products.length) {
+				cartDetails.push({
+				quantity: item.Quantity,
+				image: products[0].Image,
+				price: products[0].Price,
+				name: products[0].Name,
+				description: products[0].Description
+        	})}
+			sum += products[0].Price * item.Quantity
+		}
+    } else {
+		res.json({ status: 400, message: "Cart is not found" })
+	}
+	console.log('cart id:',CartID)
+	console.log("Details:", cartDetails);
+    console.log("Sum:", sum);
     res.render('cart', { cart: cartDetails, sum: sum });
 });
 
 export default router
-
-// user from cookie
-// getcart from db using usersId
-//if not exist, create by inserting
