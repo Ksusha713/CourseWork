@@ -11,6 +11,7 @@ let connection = await mysql.createConnection({
 });
 
 router.post('/add-to-cart', async (req, res) => {
+	console.log('hello from add to cart')
     let { id, quantity } = req.body;
     if (!id || !quantity) {
         res.json({ status: 400, message: "Body is not complete" })

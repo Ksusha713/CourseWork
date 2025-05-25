@@ -154,7 +154,7 @@
 	<main>
 		<div class="products-container">
 			<% products.forEach((product)=> { %>
-				<div class="product-card">
+				<div class="product-card" data-id=<%=product.ProductID %>>
 					<img src=<%=product.Image %>
 					alt=<%= product.Name %>
 						/>
@@ -172,20 +172,52 @@
 							<p class="description">
 								<%= product.Description %>
 							</p>
-							<button class="add-to-cart">Add to Cart</button>
+							<button class="add-to-cart" data-id="<%= product.ProductID %>">Add to Cart</button>
 							<a href=<%="products/" +product.ProductID %>>
 								View Product
 							</a>
 						</div>
+						<p class="product-msg"></p>
 				</div>
 				<%});%>
 
 		</div>
 	</main>
-
-	<footer>
-		<p>&copy; 2023 Product Store. All rights reserved.</p>
-	</footer>
 </body>
 
 </html>
+
+<script>
+	const quantity = 1;
+	async function addToCart(id) {
+		const body = JSON.stringify({ id, quantity });
+		const response = await fetch("/cart/add-to-cart", {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: body,
+		});
+
+		if (!response.ok) {
+			return 0;
+		}
+		const data = await response.json();
+		return data
+
+	}
+	document.addEventListener("click", async (e) => {
+		if (e.target.classList.contains('add-to-cart')) {
+			const added = await addToCart(e.target.dataset.id);
+			if (added.status == 200) {
+				const productCard = e.target.closest('.product-card')
+				const message = productCard.querySelector('.product-msg')
+				console.log(e.target.parentElement)
+				message.innerText = "Added";
+				message.style.color = 'green'
+				message.style.marginLeft = '10px'
+			}
+
+		}
+	});
+</script>
