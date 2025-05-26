@@ -1,27 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Delius&family=Merienda:wght@300..900&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/stylesheets/style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Courgette&family=Delius&family=Merienda:wght@300..900&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="/stylesheets/style.css">
 </head>
+
 <body>
-    <% if (typeof error !== 'undefined') { %>
-  <div class="alert alert-error" style="color: red; margin-bottom: 15px;">
-    <%= error %>
-  </div>
-<% } %>
-    <h1>Sign up</h1>
-    <form action="/signup" method="post">
-        <label>Username<input placeholder="ksusha" type="text" name="username"></label>
-        <label>Password<input type="password" name="password"></label>
-        <label>Confirm Password<input type="password" name="confirmpassword"></label>
-        <label>Email<input type="email" name="email"></label>
-        <button type="submit">Submit</button>
-    </form>
+	<% if (typeof error !=='undefined' ) { %>
+		<div class="alert alert-error" style="color: red; margin-bottom: 15px;">
+			<%= error %>
+		</div>
+		<% } %>
+			<h1>Sign up</h1>
+			<form action="/signup" method="post">
+				<label>Username<input placeholder="ksusha" type="text" name="username"></label>
+				<label>Password<input type="password" name="password"></label>
+				<label>Confirm Password<input type="password" name="confirmpassword"></label>
+				<label>Email<input type="email" name="email"></label>
+				<button type="submit">Submit</button>
+			</form>
 </body>
+
 </html>
+
+<style>
+	body {
+		padding: 50px;
+		font: "Winky Sans", Helvetica, Arial, sans-serif;
+		background-color: rgba(148, 189, 243, 0.466);
+	}
+
+	h1 {
+		font-family: "Courgette";
+		font-weight: 700;
+		text-align: center;
+		letter-spacing: 4px;
+		font-size: 60px;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	label {
+		font-family: "Dancing Script", cursive;
+		font-size: 25px;
+	}
+
+	input,
+	select {
+		display: block;
+		margin: 10px 0;
+		padding: 8px;
+		width: 100%;
+		max-width: 400px;
+		border-radius: 10px;
+		border-style: none;
+	}
+
+	button {
+		display: inline-block;
+		height: 45px;
+		width: 150px;
+		margin: 0 40px 0 16px;
+		box-sizing: border-box;
+		border: transparent;
+		border-radius: 20px;
+		font-family: "Dancing Script", cursive;
+		font-size: 18px;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: #ffffff;
+		background: linear-gradient(90deg, rgb(6, 1, 96) 0%, rgba(9, 9, 121, 1) 27%, rgba(24, 153, 180, 1) 78%, rgba(37, 177, 113, 1) 100%);
+		cursor: pointer;
+		outline: none;
+		z-index: 2;
+	}
+
+	button:hover {
+		opacity: 0.6;
+	}
+</style>
