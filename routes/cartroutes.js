@@ -93,9 +93,6 @@ router.get('/', async (req, res) => {
     } else {
 		res.json({ status: 400, message: "Cart is not found" })
 	}
-	console.log('cart id:',CartID)
-	console.log("Details:", cartDetails);
-    console.log("Sum:", sum);
     res.render('cart', { cart: cartDetails, sum: sum });
 });
 

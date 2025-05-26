@@ -16,6 +16,7 @@
 	<h1>
 		<%= product.Name %>
 	</h1>
+	<img src="<%= product.Image %>" alt="<%= product.name %>" class="product-image">
 	<button class="add-to-cart">Add To Cart</button>
 	<input type="number" placeholder="quantity" class="quantity-product" data-id="<%= product.ProductID %>" />
 </body>
@@ -43,9 +44,65 @@
 		console.log(data);
 		const message = document.createElement("p");
 		message.innerText = "Added";
+		message.style.color = "green";
 		document.body.appendChild(message);
 	}
 	addToCartButton.addEventListener("click", () => {
 		addToCart(productQuantity.dataset.id, productQuantity.value);
 	});
 </script>
+
+<style>
+	body {
+		font-family: "Courgette", cursive;
+		padding: 50px;
+		background-color: #f0f8ff;
+		text-align: center;
+	}
+
+	h1 {
+		font-size: 42px;
+		margin-bottom: 30px;
+	}
+
+	.product-image {
+		display: block;
+		margin: 0 auto 30px auto;
+		max-width: 300px;
+		width: 100%;
+		height: auto;
+		border-radius: 15px;
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+	}
+
+	.quantity-product {
+		width: 100px;
+		padding: 10px;
+		font-size: 16px;
+		border-radius: 8px;
+		border: 1px solid #ccc;
+	}
+
+	.add-to-cart {
+		margin-left: 20px;
+		padding: 10px 20px;
+		font-size: 16px;
+		border: none;
+		border-radius: 10px;
+		background-color: #4CAF50;
+		color: white;
+		cursor: pointer;
+		transition: background-color 0.3s;
+	}
+
+	.add-to-cart:hover {
+		background-color: #45a049;
+	}
+
+	#feedback {
+		margin-top: 20px;
+		color: green;
+		font-size: 18px;
+		font-weight: bold;
+	}
+</style>
