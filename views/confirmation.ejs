@@ -13,10 +13,102 @@
 </head>
 
 <body>
-	<h1>Thank you for your order</h1>
-	<p>Your tracking number is: <%= trackingNumber %>
-	</p>
-
+	<div class="thank-you-container">
+		<h1>Thank you for your order &#10084;</h1>
+		<h2>Your tracking number is: <%= trackingNumber %>
+		</h2>
+		<a href="/products" class="continue-shopping">Continue Shopping</a>
+	</div>
 </body>
 
 </html>
+
+<style>
+	body {
+		padding: 50px;
+		font-family: "Winky Sans", Helvetica, Arial, sans-serif;
+		background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+	}
+
+	.thank-you-container {
+		background-color: #ffffff;
+		padding: 40px;
+		border-radius: 20px;
+		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+		text-align: center;
+		animation: fadeIn 1.2s ease-in-out;
+	}
+
+	h1 {
+		font-family: "Courgette", cursive;
+		font-weight: 700;
+		letter-spacing: 2px;
+		font-size: 48px;
+		color: #2c3e50;
+		margin-bottom: 20px;
+	}
+
+	h2 {
+		font-family: "Courgette", cursive;
+		font-weight: 700;
+		font-size: 30px;
+		letter-spacing: 2px;
+		color: #34495e;
+	}
+
+	.heart {
+		color: red;
+		animation: pulse 1s infinite;
+	}
+
+	.tracking {
+		color: #0066cc;
+		font-weight: bold;
+	}
+
+	.continue-shopping {
+		display: inline-block;
+		margin-top: 30px;
+		text-decoration: none;
+		color: white;
+		background: #3498db;
+		padding: 12px 25px;
+		border-radius: 30px;
+		font-size: 18px;
+		transition: background 0.3s ease;
+	}
+
+	.continue-shopping:hover {
+		background: #2980b9;
+	}
+
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+		}
+
+		50% {
+			transform: scale(1.2);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(-20px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
