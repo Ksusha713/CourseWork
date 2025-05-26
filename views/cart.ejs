@@ -22,30 +22,34 @@
 			<p><a href="/login">Login</a></p>
 			<p><a href="/signup">Signup</a></p>
 		</nav>
-		<div class="head-container">
-			<h1 class="animation2">Gifts that make hearts smile — theirs or yours!</h1>
-		</div>
 	</header>
-	<h1>Cart</h1>
-	<ul>
+	<h1>Your Cart</h1>
+	<div class="cart-container">
 		<% cart.forEach(product=> { %>
-			<li>
-				<%= product.name %>
-			</li>
-			<img src="<%= product.image %>" alt="">
-			<li>
-				<%= product.quantity %>
-			</li>
-			<li>
-				<%= product.price %>
-			</li>
-			<li>
-				<%= product.description %>
-			</li>
+			<div class="cart-item">
+				<img src="<%= product.image %>" alt="<%= product.name %>">
+				<div class="item-details">
+					<h2>
+						<%= product.name %>
+					</h2>
+					<p><strong>Quantity:</strong>
+						<%= product.quantity %>
+					</p>
+					<p><strong>Price:</strong> $<%= product.price %>
+					</p>
+					<p>
+						<%= product.description %>
+					</p>
+				</div>
+			</div>
 			<% }); %>
-	</ul>
-	<%= sum.toFixed(2) %>
-		<button class="order"><a href="/checkout">Order</a></button>
+	</div>
+
+	<div class="cart-summary">
+		<h2>Total: $<%= sum.toFixed(2) %>
+		</h2>
+		<button class="order"><a href="/checkout">Checkout</a></button>
+	</div>
 </body>
 
 </html>
@@ -53,3 +57,88 @@
 <script>
 
 </script>
+
+<style>
+	body {
+		font-family: "Merienda";
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	.cart-container {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		padding: 20px;
+	}
+
+	.cart-item {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		padding: 16px;
+		background-color: #f8f9fa;
+		border-radius: 12px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+	}
+
+	.cart-item img {
+		width: 120px;
+		height: 120px;
+		object-fit: cover;
+		border-radius: 10px;
+	}
+
+	.item-details h2 {
+		margin: 0;
+		font-size: 24px;
+		font-family: "Courgette", cursive;
+	}
+
+	.item-details p {
+		margin: 6px 0;
+		font-size: 18px;
+	}
+
+	.cart-summary {
+		text-align: right;
+		padding: 20px;
+		font-size: 20px;
+	}
+
+	.cart-summary h2 {
+		font-size: 28px;
+		margin-bottom: 20px;
+	}
+
+	button a {
+		text-decoration: none;
+		color: white;
+	}
+
+	button {
+		display: inline-block;
+		height: 45px;
+		width: 150px;
+		margin: 0 40px 0 16px;
+		box-sizing: border-box;
+		border: transparent;
+		border-radius: 20px;
+		font-family: "Dancing Script", cursive;
+		font-size: 18px;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: #ffffff;
+		background: linear-gradient(90deg, rgb(6, 1, 96) 0%, rgba(9, 9, 121, 1) 27%, rgba(24, 153, 180, 1) 78%, rgba(37, 177, 113, 1) 100%);
+		cursor: pointer;
+		outline: none;
+		z-index: 2;
+	}
+
+	button:hover {
+		opacity: 0.6;
+	}
+</style>
