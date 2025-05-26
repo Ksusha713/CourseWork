@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    
-  </head>
-  <body>
-    <h1><%= product.Name %></h1>
-    <button class="add-to-cart">Add To Cart</button>
-    <input
-      type="number"
-      placeholder="quantity"
-      class="quantity-product"
-      data-id="<%= product.ProductID %>"
-    />
-  </body>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Document</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Courgette&family=Delius&family=Merienda:wght@300..900&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap"
+		rel="stylesheet">
+</head>
+
+<body>
+	<h1>
+		<%= product.Name %>
+	</h1>
+	<button class="add-to-cart">Add To Cart</button>
+	<input type="number" placeholder="quantity" class="quantity-product" data-id="<%= product.ProductID %>" />
+</body>
+
 </html>
 
 <script>
-  const addToCartButton = document.querySelector(".add-to-cart");
-  const productQuantity = document.querySelector(".quantity-product");
-  async function addToCart(id, quantity) {
-    const body = JSON.stringify({ id, quantity });
-    console.log(body);
-    const response = await fetch("/cart/add-to-cart", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: body,
-    });
+	const addToCartButton = document.querySelector(".add-to-cart");
+	const productQuantity = document.querySelector(".quantity-product");
+	async function addToCart(id, quantity) {
+		const body = JSON.stringify({ id, quantity });
+		console.log(body);
+		const response = await fetch("/cart/add-to-cart", {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: body,
+		});
 
-    if (!response.ok) {
-      return 0;
-    }
-    const data = await response.json();
-    console.log(data);
-    const message = document.createElement("p");
-    message.innerText = "Added";
-    document.body.appendChild(message);
-  }
-  addToCartButton.addEventListener("click", () => {
-    addToCart(productQuantity.dataset.id, productQuantity.value);
-  });
+		if (!response.ok) {
+			return 0;
+		}
+		const data = await response.json();
+		console.log(data);
+		const message = document.createElement("p");
+		message.innerText = "Added";
+		document.body.appendChild(message);
+	}
+	addToCartButton.addEventListener("click", () => {
+		addToCart(productQuantity.dataset.id, productQuantity.value);
+	});
 </script>
