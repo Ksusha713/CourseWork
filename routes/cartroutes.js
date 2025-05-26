@@ -11,7 +11,6 @@ let connection = await mysql.createConnection({
 });
 
 router.post('/add-to-cart', async (req, res) => {
-	console.log('hello from add to cart')
     let { id, quantity } = req.body;
     if (!id || !quantity) {
         res.json({ status: 400, message: "Body is not complete" })
@@ -57,6 +56,9 @@ router.post('/add-to-cart', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const user = req.cookies.User || [];
+	if (!user) {
+		return res.redirect('/login');
+	}
     const [cartIDs] = await connection.query(
 		`SELECT CartID FROM Cart WHERE UserID = ?`,
 		[user]
@@ -84,6 +86,10 @@ router.get('/', async (req, res) => {
         	})}
 			sum += products[0].Price * item.Quantity
 		}
+		const [total] = await connection.query(
+			`INSERT INTO Cart (Total) VALUES (?)`,
+			[sum]
+		)
     } else {
 		res.json({ status: 400, message: "Cart is not found" })
 	}

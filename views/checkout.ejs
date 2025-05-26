@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
 </head>
+
 <body>
-    <h1>Leave your order</h1>
-    <form action="/checkout" method="POST">
-      <label>Name<input type="text" name="name" /></label>
-      <label>Shipping address<input type="text" name="address"/></label>
-      <label>Payment option<select name="payment">
-        <option value="paypal">PayPal</option>
-        <option value="creditcard">Credit Card</option>
-        </select>
-      </label>
-      <label>Shipment Method<select name="shipment">
-        <option value="paypal">Courier</option>
-        <option value="creditcard">Delievery to a post station</option>
-        </select>
-      </label>
-      <button type="submit">Submit</button>
-      </form>
+	<h1>Leave your order</h1>
+	<form action="/checkout" method="POST">
+		<label>Name<input type="text" name="name" /></label>
+		<label>Shipping address<input type="text" name="address" /></label>
+		<label>Payment option<select name="payment">
+				<option value="PayPal">PayPal</option>
+				<option value="Credit Card">Credit Card</option>
+			</select>
+		</label>
+		<label>Shipment Method<select name="shipment">
+				<option value="Courier">Courier</option>
+				<option value="Delievery to a post station">Delievery to a post station</option>
+			</select>
+		</label>
+		<button type="submit">Submit</button>
+	</form>
 </body>
+
 </html>

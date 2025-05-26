@@ -5,6 +5,7 @@ import express from 'express'
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt'; //for incrypting passwords
 import cartroutes from './routes/cartroutes.js'
+import orderroutes from './routes/orderroutes.js'
 
 const app = express();
 const port = 3000;
@@ -142,7 +143,7 @@ app.get("/account/:id", async (req, res) => {
 });
 
 app.use("/cart", cartroutes);
-
+app.use("/checkout", orderroutes);
 //CHECKOUT
 
 
