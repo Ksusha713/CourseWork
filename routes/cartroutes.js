@@ -26,7 +26,6 @@ router.post('/add-to-cart', async (req, res) => {
         const [newCart] = await connection.query(`INSERT INTO Cart (userID) VALUES (?)`, 
 		[user]
 		);
-		console.log('newly createdn casdrysdf',newCart)
 		CartID = newCart.insertId
     } else {
 		CartID = cart[0].CartID;
