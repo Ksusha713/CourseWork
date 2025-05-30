@@ -38,6 +38,10 @@
 					<p><strong>Price:</strong> $<%= product.price %>
 					</p>
 				</div>
+				<div class="remove-button">
+					<button class="remove" data-id="<%= product.ProductID %>">Remove</button>
+				</div>
+				<p class="product-msg"></p>
 			</div>
 			<% }); %>
 	</div>
@@ -52,7 +56,40 @@
 </html>
 
 <script>
+	async function remove(id) {
+		const body = JSON.stringify({ id });
+		const response = await fetch("/cart/remove", {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: body,
+		});
 
+		if (!response.ok) {
+			return 0;
+		}
+		const data = await response.json();
+		return data
+
+	}
+	document.addEventListener("click", async (e) => {
+		if (e.target.classList.contains('remove')) {
+			const removed = await remove(e.target.dataset.id);
+			if (removed.status === 200) {
+				const productCard = e.target.closest('.cart-item')
+				const message = productCard.querySelector('.product-msg')
+				console.log(e.target.parentElement)
+				message.innerText = "Removed";
+				message.style.color = 'red'
+				message.style.marginLeft = '10px'
+				setTimeout(() => {
+					productCard.remove();;
+				}, 1000);
+			}
+
+		}
+	});
 </script>
 
 <style>
@@ -75,6 +112,7 @@
 	.cart-item {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 20px;
 		padding: 16px;
 		background-color: #f8f9fa;
@@ -87,6 +125,10 @@
 		height: 120px;
 		object-fit: cover;
 		border-radius: 10px;
+	}
+
+	.item-details {
+		flex: 1;
 	}
 
 	.item-details h2 {
@@ -109,6 +151,14 @@
 	.cart-summary h2 {
 		font-size: 28px;
 		margin-bottom: 20px;
+	}
+
+	.remove {
+		height: 35px;
+		width: 100px;
+		margin: 0 40px 0 16px;
+		font-size: 12px;
+		background: linear-gradient(90deg, rgb(96, 1, 1) 0%, rgb(121, 9, 37) 27%, rgb(180, 24, 97) 78%, rgb(177, 37, 119) 100%);
 	}
 
 	button a {

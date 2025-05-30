@@ -23,19 +23,20 @@
 			<p><a href="/signup">Signup</a></p>
 		</nav>
 	</header>
+
+	<h1>Sign up</h1>
+	<form action="/signup" method="post">
+		<label>Username<input placeholder="ksusha" type="text" name="username"></label>
+		<label>Password<input type="password" name="password"></label>
+		<label>Confirm Password<input type="password" name="confirmpassword"></label>
+		<label>Email<input type="email" name="email"></label>
+		<button type="submit">Submit</button>
+	</form>
 	<% if (typeof error !=='undefined' ) { %>
 		<div class="alert alert-error" style="color: red; margin-bottom: 15px;">
 			<%= error %>
 		</div>
 		<% } %>
-			<h1>Sign up</h1>
-			<form action="/signup" method="post">
-				<label>Username<input placeholder="ksusha" type="text" name="username"></label>
-				<label>Password<input type="password" name="password"></label>
-				<label>Confirm Password<input type="password" name="confirmpassword"></label>
-				<label>Email<input type="email" name="email"></label>
-				<button type="submit">Submit</button>
-			</form>
 </body>
 
 </html>

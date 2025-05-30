@@ -43,8 +43,6 @@ router.post('/add-to-cart', async (req, res) => {
 			WHERE ProductID = ?`,
 			[newQuantity, id]
 		)
-		// Таким чином в підсумку користувач буде мати усі його товари в кошику.
-
 	} else {
 		const [products] = await connection.query(
 			`INSERT INTO CartItems (ProductID, Quantity, CartID) VALUES (?, ?, ?)`,
@@ -83,6 +81,7 @@ router.get('/', async (req, res) => {
 		}
 		for (const item of results) {
 			cartDetails.push({
+				ProductID: item.ProductID,
 				quantity: item.Quantity,
 				image: item.Image,
 				price: item.Price,
@@ -99,14 +98,37 @@ router.get('/', async (req, res) => {
 	res.render('cart', { cart: cartDetails, sum: sum });
 });
 
-export default router
-// fetch('/cart/remove', {
-// 	method: "post",
-// 	body:{
-// 		quantity,
-// 		id
-// 	}
-// })
+router.post('/remove', async (req, res) => {
+	const user = req.cookies.User;
+	const { id } = req.body;
+	if (!user) {
+		return res.redirect('/login');
+	}
+	const [cart] = await connection.query(
+		`SELECT CartID FROM Cart WHERE UserID = ?`,
+		[user]
+	);
+	const CartID = cart[0].CartID;
+	await connection.query(
+		`DELETE FROM CartItems WHERE ProductID = ? and CartID = ?`,
+		[id, CartID]
+	)
+	const [results] = await connection.query(
+		`SELECT CartItems.Quantity, Products.Price
+			FROM CartItems 
+			INNER JOIN Products on CartItems.ProductID = Products.ProductID
+			WHERE CartID = ?`,
+		[CartID]
+	)
+	let sum = 0;
+	for (const item of results) {
+		sum += item.Price * item.Quantity
+	}
+	await connection.query(
+		`UPDATE Cart SET Total = ? WHERE CartID = ?`,
+		[sum, CartID]
+	);
+	res.json({ status: 200, message: "Removed" })
+});
 
-// router.post
-// constv {id. q} = req.body
+export default router
