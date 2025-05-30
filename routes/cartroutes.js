@@ -4,17 +4,17 @@ import mysql from 'mysql2/promise';
 
 const router = Router();
 let connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Kseniia-2006",
-    database: "webshop",
+	host: "localhost",
+	user: "root",
+	password: "Kseniia-2006",
+	database: "webshop",
 });
 
 router.post('/add-to-cart', async (req, res) => {
-    let { id, quantity } = req.body;
-    if (!id || !quantity) {
-        res.json({ status: 400, message: "Body is not complete" })
-    }
+	let { id, quantity } = req.body;
+	if (!id || !quantity) {
+		res.json({ status: 400, message: "Body is not complete" })
+	}
 	const user = req.cookies.User;
 	const [cart] = await connection.query(
 		`SELECT * FROM Cart WHERE UserID = ?`,
@@ -22,77 +22,91 @@ router.post('/add-to-cart', async (req, res) => {
 	);
 	console.log()
 	let CartID;
-	if (!cart.length ) {
-        const [newCart] = await connection.query(`INSERT INTO Cart (userID) VALUES (?)`, 
-		[user]
+	if (!cart.length) {
+		const [newCart] = await connection.query(`INSERT INTO Cart (userID) VALUES (?)`,
+			[user]
 		);
 		CartID = newCart.insertId
-    } else {
+	} else {
 		CartID = cart[0].CartID;
 	}
 	const [products] = await connection.query(
 		`SELECT * FROM CartItems Where ProductID = ? AND CartID = ?`,
 		[id, CartID]
 	)
-    if (products.length > 0) {
+	if (products.length > 0) {
 		console.log(products)
-        const newQuantity = parseInt(products[0].Quantity)+ parseInt(quantity)
-        await connection.query(
+		const newQuantity = parseInt(products[0].Quantity) + parseInt(quantity)
+		await connection.query(
 			`UPDATE CartItems
 			SET Quantity = ?
 			WHERE ProductID = ?`,
 			[newQuantity, id]
 		)
-    } else {
-        const [products] = await connection.query(
+		// Таким чином в підсумку користувач буде мати усі його товари в кошику.
+
+	} else {
+		const [products] = await connection.query(
 			`INSERT INTO CartItems (ProductID, Quantity, CartID) VALUES (?, ?, ?)`,
-		[id, quantity, CartID]	
+			[id, quantity, CartID]
 		)
-    } 
-	
-    res.json({ status: 200, message: "Added" })
+	}
+
+	res.json({ status: 200, message: "Added" })
 });
 
 router.get('/', async (req, res) => {
-    const user = req.cookies.User || [];
+	const user = req.cookies.User;
 	if (!user) {
 		return res.redirect('/login');
 	}
-    const [cartIDs] = await connection.query(
+	const [cartIDs] = await connection.query(
 		`SELECT CartID FROM Cart WHERE UserID = ?`,
 		[user]
 	)
-    let sum = 0
+	if (!cartIDs.length) {
+		return res.json({ status: 400, message: "Cart not found" });
+	}
+	let sum = 0
 	let cartDetails = [];
-	const {CartID} = cartIDs[0]
+	const { CartID } = cartIDs[0]
 	if (CartID > 0) {
 		const [results] = await connection.query(
-			`SELECT ProductID, Quantity FROM CartItems WHERE CartID = ?`,
+			`SELECT CartItems.ProductID, CartItems.Quantity, Products.Name, Products.Price, Products.Description, Products.Image
+			FROM CartItems 
+			INNER JOIN Products on CartItems.ProductID = Products.ProductID
+			WHERE CartID = ?`,
 			[CartID]
 		)
-		for (const item of results) {
-			const [products] = await connection.query(
-				`SELECT Name, Price, Description, Image FROM Products WHERE ProductID = ?`,
-				[item.ProductID]
-			)
-			if (products.length) {
-				cartDetails.push({
-				quantity: item.Quantity,
-				image: products[0].Image,
-				price: products[0].Price,
-				name: products[0].Name,
-				description: products[0].Description
-        	})}
-			sum += products[0].Price * item.Quantity
+		if (results.length === 0) {
+			return res.render('cart', { cart: [], sum: 0 });
 		}
-		const [total] = await connection.query(
-			`INSERT INTO Cart (Total) VALUES (?)`,
-			[sum]
-		)
-    } else {
-		res.json({ status: 400, message: "Cart is not found" })
+		for (const item of results) {
+			cartDetails.push({
+				quantity: item.Quantity,
+				image: item.Image,
+				price: item.Price,
+				name: item.Name,
+				description: item.Description
+			})
+			sum += item.Price * item.Quantity
+		}
 	}
-    res.render('cart', { cart: cartDetails, sum: sum });
+	const [total] = await connection.query(
+		`UPDATE Cart SET Total = ? WHERE CartID = ?`,
+		[sum, CartID]
+	)
+	res.render('cart', { cart: cartDetails, sum: sum });
 });
 
 export default router
+// fetch('/cart/remove', {
+// 	method: "post",
+// 	body:{
+// 		quantity,
+// 		id
+// 	}
+// })
+
+// router.post
+// constv {id. q} = req.body
