@@ -4,10 +4,10 @@ import mysql from 'mysql2/promise';
 
 const router = Router();
 let connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Kseniia-2006",
-    database: "webshop",
+	host: "shortline.proxy.rlwy.net",
+	user: "root",
+	password: "gvWbYBsHDJlqgilzJWHKhmcVMEKVUvSd",
+	database: "webshop",
 });
 
 router.get('/', (req, res) => {
