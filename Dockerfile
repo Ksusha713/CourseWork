@@ -1,17 +1,15 @@
-FROM node:23-slim
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+# Use the Node official image
+# https://hub.docker.com/_/node
+FROM node:lts
 
-WORKDIR /usr/src/app
+# Create and change to the app directory.
+WORKDIR /app
 
-COPY package*.json ./
+# Copy local code to the container image
+COPY . ./
 
-RUN pnpm install 
+# Install packages
+RUN npm ci
 
-COPY . .
-
-
-EXPOSE 5000
-
-CMD [ "pnpm", "dev" ]
+# Serve the app
+CMD ["npm", "run", "start"]
