@@ -19,9 +19,9 @@ app.use(express.static('public'))
 app.use(jsonParser);
 
 let connection = await mysql.createConnection({
-	host: "localhost",
+	host: "shortline.proxy.rlwy.net",
 	user: "root",
-	password: "Kseniia-2006",
+	password: "gvWbYBsHDJlqgilzJWHKhmcVMEKVUvSd",
 	database: "webshop",
 });
 
