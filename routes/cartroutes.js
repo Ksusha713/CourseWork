@@ -4,12 +4,11 @@ import mysql from 'mysql2/promise';
 
 const router = Router();
 let connection = await mysql.createConnection({
-	host: "localhost",
+	host: "shortline.proxy.rlwy.net",
 	user: "root",
-	password: "Kseniia-2006",
+	password: "gvWbYBsHDJlqgilzJWHKhmcVMEKVUvSd",
 	database: "webshop",
 });
-
 router.post('/add-to-cart', async (req, res) => {
 	let { id, quantity } = req.body;
 	if (!id || !quantity) {
