@@ -1,14 +1,8 @@
 import { Router } from 'express';
 import { createConnection } from 'mysql2';
 import mysql from 'mysql2/promise';
-
+import { connection } from '../index.js';
 const router = Router();
-let connection = await mysql.createConnection({
-	host: "shortline.proxy.rlwy.net",
-	user: "root",
-	password: "gvWbYBsHDJlqgilzJWHKhmcVMEKVUvSd",
-	database: "webshop",
-});
 
 router.get('/', (req, res) => {
     res.render('checkout')
@@ -25,7 +19,7 @@ router.post('/', async (req, res) => {
 		return res.redirect('/login');
 	}
 	const [cartDetails] = await connection.query(
-		`SELECT CartID, Total FROM Cart WHERE UserID = ?`,
+		`SELECT CartID, Total FROM cart WHERE UserID = ?`,
 		[user]
 	)
     
@@ -34,7 +28,7 @@ router.post('/', async (req, res) => {
 
     if (CartID > 0) {
 		const [results] = await connection.query(
-			`INSERT INTO Orders (UserID, OrderDate, TotalPrice, TrackingNumber, PaymentMethod, ShipmentMethod, Address, CartID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+			`INSERT INTO orders (UserID, OrderDate, TotalPrice, TrackingNumber, PaymentMethod, ShipmentMethod, Address, CartID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 			[user, new Date(), total, trackingNumber, payment, shipment, address, CartID]    
     	)
 		const OrderId = results.insertId;
@@ -50,7 +44,7 @@ router.get('/confirmation/:id', async (req, res) => {
 		res.redirect("/cart");
 	}
 	const [results] = await connection.query(
-		`SELECT TrackingNumber FROM Orders WHERE OrderID = ?`, 
+		`SELECT TrackingNumber FROM orders WHERE OrderID = ?`, 
 		[OrderID]
 	)
 	const {TrackingNumber} = results[0]

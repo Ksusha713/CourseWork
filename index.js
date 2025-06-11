@@ -23,8 +23,10 @@ let connection = await mysql.createConnection({
 	user: "root",
 	password: "gvWbYBsHDJlqgilzJWHKhmcVMEKVUvSd",
 	database: "webshop",
+	port: 26564
 });
 
+export {connection};
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
@@ -33,12 +35,12 @@ app.get("/", (req, res) => {
 
 //PRODUCTS
 app.get("/products", async (req, res) => {
-	const [results] = await connection.query("SELECT * FROM Products")
+	const [results] = await connection.query("SELECT * FROM products")
 	res.render(`${__dirname}/views/products.ejs`, { products: results })
 });
 //ITEM
 app.get("/products/:id", async (req, res) => {
-	const [results] = await connection.query(`SELECT * FROM Products WHERE ProductID = ${req.params.id}`)
+	const [results] = await connection.query(`SELECT * FROM products WHERE ProductID = ${req.params.id}`)
 	res.render(`${__dirname}/views/item.ejs`, { product: results[0] });
 });
 
@@ -55,7 +57,7 @@ app.post("/login", async (req, res) => {
 	}
 
 	const [results] = await connection.query(
-		`SELECT * FROM Users WHERE email = ? LIMIT 1`,
+		`SELECT * FROM users WHERE email = ? LIMIT 1`,
 		[email],
 	);
 	if (results.length === 0) {
@@ -98,7 +100,7 @@ app.post("/signup", async (req, res) => {
 		}
 
 		const [usersName] = await connection.query(
-			`SELECT * FROM Users WHERE username = ?`,
+			`SELECT * FROM users WHERE username = ?`,
 			[username]
 		);
 		if (usersName.length > 0) {
@@ -108,7 +110,7 @@ app.post("/signup", async (req, res) => {
 		}
 
 		const [usersEmail] = await connection.query(
-			`SELECT * FROM Users WHERE email = ?`,
+			`SELECT * FROM users WHERE email = ?`,
 			[email]
 		);
 		if (usersEmail.length > 0) {
@@ -117,7 +119,7 @@ app.post("/signup", async (req, res) => {
 
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const [result] = await connection.query(
-			`INSERT INTO Users (username, password, email) VALUES (?, ?, ?)`,
+			`INSERT INTO users (username, password, email) VALUES (?, ?, ?)`,
 			[username, hashedPassword, email]
 		);
 		const newUserId = result.insertId;
@@ -147,7 +149,7 @@ app.get("/account/:id", async (req, res) => {
 		res.redirect("/login");
 	}
 	const [results] = await connection.query(
-		`SELECT * FROM Users WHERE UserID = ?`,
+		`SELECT * FROM users WHERE UserID = ?`,
 		[req.params.id]
 	)
 

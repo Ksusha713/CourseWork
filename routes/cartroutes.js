@@ -1,14 +1,10 @@
 import { Router } from 'express';
 import { createConnection } from 'mysql2';
 import mysql from 'mysql2/promise';
+import { connection } from '../index.js';
 
 const router = Router();
-let connection = await mysql.createConnection({
-	host: "shortline.proxy.rlwy.net",
-	user: "root",
-	password: "gvWbYBsHDJlqgilzJWHKhmcVMEKVUvSd",
-	database: "webshop",
-});
+
 router.post('/add-to-cart', async (req, res) => {
 	let { id, quantity } = req.body;
 	if (!id || !quantity) {
@@ -16,13 +12,13 @@ router.post('/add-to-cart', async (req, res) => {
 	}
 	const user = req.cookies.User;
 	const [cart] = await connection.query(
-		`SELECT * FROM Cart WHERE UserID = ?`,
+		`SELECT * FROM cart WHERE UserID = ?`,
 		[user]
 	);
 	console.log()
 	let CartID;
 	if (!cart.length) {
-		const [newCart] = await connection.query(`INSERT INTO Cart (userID) VALUES (?)`,
+		const [newCart] = await connection.query(`INSERT INTO cart (userID) VALUES (?)`,
 			[user]
 		);
 		CartID = newCart.insertId
@@ -30,21 +26,21 @@ router.post('/add-to-cart', async (req, res) => {
 		CartID = cart[0].CartID;
 	}
 	const [products] = await connection.query(
-		`SELECT * FROM CartItems Where ProductID = ? AND CartID = ?`,
+		`SELECT * FROM cartitems Where ProductID = ? AND CartID = ?`,
 		[id, CartID]
 	)
 	if (products.length > 0) {
 		console.log(products)
 		const newQuantity = parseInt(products[0].Quantity) + parseInt(quantity)
 		await connection.query(
-			`UPDATE CartItems
+			`UPDATE cartitems
 			SET Quantity = ?
 			WHERE ProductID = ?`,
 			[newQuantity, id]
 		)
 	} else {
 		const [products] = await connection.query(
-			`INSERT INTO CartItems (ProductID, Quantity, CartID) VALUES (?, ?, ?)`,
+			`INSERT INTO cartitems (ProductID, Quantity, CartID) VALUES (?, ?, ?)`,
 			[id, quantity, CartID]
 		)
 	}
@@ -58,7 +54,7 @@ router.get('/', async (req, res) => {
 		return res.redirect('/login');
 	}
 	const [cartIDs] = await connection.query(
-		`SELECT CartID FROM Cart WHERE UserID = ?`,
+		`SELECT CartID FROM cart WHERE UserID = ?`,
 		[user]
 	)
 	if (!cartIDs.length) {
@@ -69,9 +65,9 @@ router.get('/', async (req, res) => {
 	const { CartID } = cartIDs[0]
 	if (CartID > 0) {
 		const [results] = await connection.query(
-			`SELECT CartItems.ProductID, CartItems.Quantity, Products.Name, Products.Price, Products.Description, Products.Image
-			FROM CartItems 
-			INNER JOIN Products on CartItems.ProductID = Products.ProductID
+			`SELECT cartitems.ProductID, cartitems.Quantity, products.Name, products.Price, products.Description, products.Image
+			FROM cartitems 
+			INNER JOIN products on cartitems.ProductID = Products.ProductID
 			WHERE CartID = ?`,
 			[CartID]
 		)
@@ -91,7 +87,7 @@ router.get('/', async (req, res) => {
 		}
 	}
 	const [total] = await connection.query(
-		`UPDATE Cart SET Total = ? WHERE CartID = ?`,
+		`UPDATE cart SET Total = ? WHERE CartID = ?`,
 		[sum, CartID]
 	)
 	res.render('cart', { cart: cartDetails, sum: sum });
@@ -104,18 +100,18 @@ router.post('/remove', async (req, res) => {
 		return res.redirect('/login');
 	}
 	const [cart] = await connection.query(
-		`SELECT CartID FROM Cart WHERE UserID = ?`,
+		`SELECT CartID FROM cart WHERE UserID = ?`,
 		[user]
 	);
 	const CartID = cart[0].CartID;
 	await connection.query(
-		`DELETE FROM CartItems WHERE ProductID = ? and CartID = ?`,
+		`DELETE FROM cartitems WHERE ProductID = ? and CartID = ?`,
 		[id, CartID]
 	)
 	const [results] = await connection.query(
-		`SELECT CartItems.Quantity, Products.Price
-			FROM CartItems 
-			INNER JOIN Products on CartItems.ProductID = Products.ProductID
+		`SELECT cartitems.Quantity, products.Price
+			FROM cartitems 
+			INNER JOIN products on cartitems.ProductID = products.ProductID
 			WHERE CartID = ?`,
 		[CartID]
 	)
@@ -124,7 +120,7 @@ router.post('/remove', async (req, res) => {
 		sum += item.Price * item.Quantity
 	}
 	await connection.query(
-		`UPDATE Cart SET Total = ? WHERE CartID = ?`,
+		`UPDATE cart SET Total = ? WHERE CartID = ?`,
 		[sum, CartID]
 	);
 	res.json({ status: 200, message: "Removed" })
