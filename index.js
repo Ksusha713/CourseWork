@@ -19,7 +19,7 @@ app.use(express.static('public'))
 app.use(jsonParser);
 
 let connection = await mysql.createConnection({
-	host: "ksusha-shop-ppqwm9:3306",
+	host: "ksusha-shop-ppqwm9",
 	user: "Ksusha",
 	password: "200ksenia200",
 	database: "webshop",
