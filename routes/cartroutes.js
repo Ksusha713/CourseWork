@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
 		[user]
 	)
 	if (!cartIDs.length) {
-		return res.json({ status: 400, message: "Cart not found" });
+		return res.json({ status: 404, message: "Cart not found" });
 	}
 	let sum = 0
 	let cartDetails = [];
@@ -67,7 +67,7 @@ router.get('/', async (req, res) => {
 		const [results] = await connection.query(
 			`SELECT cartitems.ProductID, cartitems.Quantity, products.Name, products.Price, products.Description, products.Image
 			FROM cartitems 
-			INNER JOIN products on cartitems.ProductID = Products.ProductID
+			LEFT JOIN products on cartitems.ProductID = Products.ProductID
 			WHERE CartID = ?`,
 			[CartID]
 		)
