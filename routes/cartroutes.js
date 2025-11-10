@@ -67,7 +67,7 @@ router.get('/', async (req, res) => {
 		const [results] = await connection.query(
 			`SELECT cartitems.ProductID, cartitems.Quantity, products.Name, products.Price, products.Description, products.Image
 			FROM cartitems 
-			LEFT JOIN products on cartitems.ProductID = Products.ProductID
+			LEFT JOIN products on cartitems.ProductID = products.ProductID
 			WHERE CartID = ?`,
 			[CartID]
 		)
