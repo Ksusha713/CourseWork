@@ -8,7 +8,7 @@ import cartroutes from './routes/cartroutes.js'
 import orderroutes from './routes/orderroutes.js'
 
 const app = express();
-const port = 3000;
+const port = 3333;
 const __dirname = import.meta.dirname;
 const jsonParser = bodyParser.json()
 
