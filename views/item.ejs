@@ -49,8 +49,14 @@
 		const data = await response.json();
 		console.log(data);
 		const message = document.createElement("p");
-		message.innerText = "Added";
-		message.style.color = "green";
+		if (quantity > 0) {
+			message.innerText = "Added";
+			message.style.color = "green";
+		}
+		else {
+			message.innerText = "Enter valid quantity!";
+			message.style.color = "red";
+		}
 		document.body.appendChild(message);
 
 	}
