@@ -22,8 +22,13 @@
 					<p><strong>Price:</strong> $<%= product.price %>
 					</p>
 				</div>
+				<div class="quantity-buttons">
+					<button onclick="changeQty('<%= product.ProductID %>', -1)">−</button>
+					<span class="quantity"><%= product.quantity %></span>
+					<button onclick="changeQty('<%= product.ProductID %>', 1)" class="plus-button">+</button>
+				</div>
 				<div class="remove-button">
-					<button class="remove" data-id="<%= product.ProductID %>">Remove</button>
+					<button class="remove" data-id="<%= product.ProductID %>" class="minus-button">Remove</button>
 				</div>
 				<p class="product-msg"></p>
 			</div>
@@ -31,7 +36,7 @@
 	</div>
 
 	<div class="cart-summary">
-		<h2>Total: $<%= sum.toFixed(2) %>
+		<h2 id="total">Total: $<%= sum.toFixed(2) %>
 		</h2>
 		<button class="order"><a href="/checkout">Checkout</a></button>
 	</div>
@@ -60,7 +65,7 @@
 	document.addEventListener("click", async (e) => {
 		if (e.target.classList.contains('remove')) {
 			const removed = await remove(e.target.dataset.id);
-			if (removed.status === 200) {
+			if (removed.status === 200) {	
 				const productCard = e.target.closest('.cart-item')
 				const message = productCard.querySelector('.product-msg')
 				console.log(e.target.parentElement)
@@ -70,10 +75,42 @@
 				setTimeout(() => {
 					productCard.remove();;
 				}, 1000);
+				const totalCost = document.getElementById('total')
+				totalCost.textContent = `Total: $${removed.sum.toFixed(2)}`;
 			}
 
 		}
 	});
+
+	// async function quantity(ProductID, Quantity) {
+	// 	const response = await fetch("/cart/remove", {
+	// 		headers: {
+	// 			"Content-Type": "application/json",
+	// 		},
+	// 		method: "POST",
+	// 		body: JSON.stringify({ id, change }),
+	// 	});
+
+	// 	if (!response.ok) {
+	// 		return 0;
+	// 	}
+	// 	const data = await response.json();
+
+	// 	if (data.status === 200) {
+    //     const productCard = document.querySelector(".plus-button");
+    //     const qtyDisplay = productCard.querySelector('.quantity');
+    //     const qtyLabel = productCard.querySelector('.item-details p strong').nextSibling;
+
+    //     if (data.newQuantity <= 0) {
+    //         productCard.remove();
+    //     } else {
+    //         qtyDisplay.innerText = data.newQuantity; // Update the span
+    //         qtyLabel.textContent = ` ${data.newQuantity} `; // Update the details text
+    //     }
+
+    //     document.getElementById('total').textContent = `Total: $${data.newTotal.toFixed(2)}`;
+    // }
+	// }
 </script>
 
 <style>
@@ -137,6 +174,20 @@
 		margin-bottom: 20px;
 	}
 
+	.quantity-buttons button {
+		height: 20px;
+		width: 20px;
+		margin: 0 16px;
+		font-size: 16px;
+		font-weight: bold;
+		padding-left: 5.5px;
+		border: none;
+		line-height: 20px; 
+		text-align: center;
+		justify-content: center;
+		background: linear-gradient(90deg, rgb(1, 96, 22) 0%, rgb(9, 121, 18) 27%, rgb(24, 180, 32) 78%, rgb(42, 177, 37) 100%);
+	}
+	
 	.remove {
 		height: 35px;
 		width: 100px;

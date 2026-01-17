@@ -1,8 +1,45 @@
 
 <nav class="navbar">
-    <p><a href="/account">My account</a></p>
+
     <p><a href="/products" class="login">Products</a></p>
     <p><a href="/cart" class="login">Cart</a></p>
-    <p><a href="/login">Login</a></p>
+   <% if (user) { %>
+        <p><a href="/account">My account</a></p>
+        <form action="/logout" method="post">
+            <button class="button">
+            Logout    
+            </button>
+        </form>
+  <% } else if (!user) { %> 
+        <p><a href="/login">Login</a></p>
     <p><a href="/signup">Signup</a></p>
+    <% } %>
+
 </nav>
+
+<style>
+    .button {
+		display: inline-block;
+		height: 30px;
+		width: 120px;
+		margin: 0 40px 0 16px;
+		box-sizing: border-box;
+		border: transparent;
+		border-radius: 20px;
+		font-family: "Courgette", italic;
+		font-size: 20px;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: #ffffff;
+		background: #343dbe;
+		cursor: pointer;
+		outline: none;
+		z-index: 2;
+	}
+
+	button a {
+		text-decoration: none;
+		color: white;
+	}
+</style>

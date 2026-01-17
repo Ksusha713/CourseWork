@@ -26,11 +26,16 @@ let connection = await mysql.createConnection({
 	port: 61002
 });
 
-export {connection};
+export { connection };
 app.set("view engine", "ejs");
+app.use((req, res, next) => {
+	const user = req.cookies.User
 
+	res.locals.user = user;
+	next()
+})
 app.get("/", (req, res) => {
-	res.sendFile(`${__dirname}/views/index.html`);
+	res.render(`${__dirname}/views/index.ejs`)
 });
 
 //PRODUCTS
@@ -47,10 +52,14 @@ app.get("/products/:id", async (req, res) => {
 
 //LOGIN
 app.get("/login", (req, res) => {
+	if (res.locals.user) {
+		return res.redirect("/account/" + res.locals.user)
+	}
 	res.render(`${__dirname}/views/login.ejs`)
 });
 
 app.post("/login", async (req, res) => {
+
 	const { email, password } = req.body;
 	if (!email || !password) {
 		return res.render("login", { error: "All fields are required" });
@@ -93,7 +102,7 @@ app.post("/signup", async (req, res) => {
 			return res.render("signup", { error: "All fields are required" });
 		}
 		if (password.length < 8) {
-			return res.render("signup", { error: "Password too short" });
+			return res.render("signup", { error: "Password is too short" });
 		}
 		if (password !== confirmpassword) {
 			return res.render("signup", { error: "Passwords don't match" })
@@ -160,6 +169,11 @@ app.use("/cart", cartroutes);
 app.use("/checkout", orderroutes);
 //CHECKOUT
 
+//LOGOUT
+app.post("/logout", async (req, res) => {
+	res.clearCookie('User')
+	res.redirect('/')
+})
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);

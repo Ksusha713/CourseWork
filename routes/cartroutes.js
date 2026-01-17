@@ -14,7 +14,7 @@ router.post('/add-to-cart', async (req, res) => {
 	const [cart] = await connection.query(
 		`SELECT * FROM cart WHERE UserID = ?`,
 		[user]
-	);
+	)
 	console.log()
 	let CartID;
 	if (!cart.length) {
@@ -35,8 +35,8 @@ router.post('/add-to-cart', async (req, res) => {
 		await connection.query(
 			`UPDATE cartitems
 			SET Quantity = ?
-			WHERE ProductID = ?`,
-			[newQuantity, id]
+			WHERE ProductID = ? and CartId = ?`,
+			[newQuantity, id, CartID]
 		)
 	} else {
 		const [products] = await connection.query(
@@ -53,13 +53,23 @@ router.get('/', async (req, res) => {
 	if (!user) {
 		return res.redirect('/login');
 	}
+	const [cart] = await connection.query(
+		`SELECT * FROM cart WHERE UserID = ?`,
+		[user]
+	)
+	let cartID;
+	if (!cart.length) {
+		const [newCart] = await connection.query(`INSERT INTO cart (userID) VALUES (?)`,
+			[user]
+		);
+		cartID = newCart.insertId
+	} else {
+		cartID = cart[0].CartID;
+	}
 	const [cartIDs] = await connection.query(
 		`SELECT CartID FROM cart WHERE UserID = ?`,
 		[user]
 	)
-	if (!cartIDs.length) {
-		return res.json({ status: 404, message: "Cart not found" });
-	}
 	let sum = 0
 	let cartDetails = [];
 	const { CartID } = cartIDs[0]
@@ -123,7 +133,7 @@ router.post('/remove', async (req, res) => {
 		`UPDATE cart SET Total = ? WHERE CartID = ?`,
 		[sum, CartID]
 	);
-	res.json({ status: 200, message: "Removed" })
+	res.json({ status: 200, message: "Removed", sum: sum})
 });
 
 export default router
