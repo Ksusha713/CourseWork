@@ -14,6 +14,9 @@
 </head>
 
 <body>
+	<header>
+		<%- include('partials/navbar') %>
+	</header>
 	<h1>Leave your order</h1>
 	<form action="/checkout" method="POST">
 		<label>Name<input type="text" name="name" /></label>
