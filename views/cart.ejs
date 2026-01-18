@@ -23,9 +23,9 @@
 					</p>
 				</div>
 				<div class="quantity-buttons">
-					<button onclick="changeQty('<%= product.ProductID %>', -1)">−</button>
+					<button class="removeOne" onclick="removeOne('<%= product.ProductID %>', 1)">−</button>
 					<span class="quantity"><%= product.quantity %></span>
-					<button onclick="changeQty('<%= product.ProductID %>', 1)" class="plus-button">+</button>
+					<button class="addOne" onclick="addOne('<%= product.ProductID %>', 1)" class="plus-button">+</button>
 				</div>
 				<div class="remove-button">
 					<button class="remove" data-id="<%= product.ProductID %>" class="minus-button">Remove</button>
@@ -60,7 +60,6 @@
 		}
 		const data = await response.json();
 		return data
-
 	}
 	document.addEventListener("click", async (e) => {
 		if (e.target.classList.contains('remove')) {
@@ -78,10 +77,43 @@
 				const totalCost = document.getElementById('total')
 				totalCost.textContent = `Total: $${removed.sum.toFixed(2)}`;
 			}
-
 		}
 	});
 
+	async function removeOne(id, quantity) {
+		const body = JSON.stringify({ id, quantity });
+		const response = await fetch("/cart/remove", {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: body,
+		});
+
+		if (!response.ok) {
+			return 0;
+		}
+		const data = await response.json();
+		console.log(data)
+		window.location.reload()
+
+	}
+	async function addOne(id, quantity) {
+		const body = JSON.stringify({ id, quantity });
+		const response = await fetch("/cart/add-to-cart", {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+			body: body,
+		});
+
+		if (!response.ok) {
+			return 0;
+		}
+		const data = await response.json();
+		window.location.reload()
+	}
 	// async function quantity(ProductID, Quantity) {
 	// 	const response = await fetch("/cart/remove", {
 	// 		headers: {

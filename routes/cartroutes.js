@@ -105,19 +105,37 @@ router.get('/', async (req, res) => {
 
 router.post('/remove', async (req, res) => {
 	const user = req.cookies.User;
-	const { id } = req.body;
+	const { id, quantity } = req.body;
 	if (!user) {
 		return res.redirect('/login');
 	}
 	const [cart] = await connection.query(
 		`SELECT CartID FROM cart WHERE UserID = ?`,
 		[user]
-	);
+	)
 	const CartID = cart[0].CartID;
-	await connection.query(
+	const [rows] = await connection.query(
+		`SELECT Quantity FROM cartitems WHERE ProductID = ? and CartID = ?`,
+		[id, CartID])
+	if (!rows) {
+		res.json({status: 404, message: "Not found"})
+	}
+	let newQuantity = rows[0].Quantity - 1
+	if (quantity) { 	
+		
+		await connection.query(
+			`UPDATE cartitems
+			SET Quantity = ? 
+			WHERE ProductID = ? and CartID = ?`,
+		[newQuantity, id, CartID]
+		)
+	}
+	else {
+		await connection.query(
 		`DELETE FROM cartitems WHERE ProductID = ? and CartID = ?`,
 		[id, CartID]
-	)
+		)
+	}
 	const [results] = await connection.query(
 		`SELECT cartitems.Quantity, products.Price
 			FROM cartitems 
@@ -133,7 +151,7 @@ router.post('/remove', async (req, res) => {
 		`UPDATE cart SET Total = ? WHERE CartID = ?`,
 		[sum, CartID]
 	);
-	res.json({ status: 200, message: "Removed", sum: sum})
+	res.json({ status: 200, message: "Removed", sum: sum, quantity: newQuantity})
 });
 
 export default router
